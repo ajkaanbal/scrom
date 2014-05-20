@@ -3,6 +3,10 @@ from pyramid.view import view_config
 
 from sqlalchemy.exc import DBAPIError
 
+from unipath import Path
+from cornice import Service
+from cornice.resource import resource
+
 from .models import (
     DBSession,
     MyModel,
@@ -10,26 +14,27 @@ from .models import (
 
 
 @view_config(route_name='home', renderer='templates/mytemplate.pt')
-def my_view(request):
-    try:
-        one = DBSession.query(MyModel).filter(MyModel.name == 'one').first()
-    except DBAPIError:
-        return Response(conn_err_msg, content_type='text/plain', status_int=500)
-    return {'one': one, 'project': 'scrom'}
+def home(request):
+    return {'project': 'SCROM'}
 
-conn_err_msg = """\
-Pyramid is having a problem using your SQL database.  The problem
-might be caused by one of the following things:
 
-1.  You may need to run the "initialize_scrom_db" script
-    to initialize your database tables.  Check your virtual 
-    environment's "bin" directory for this script and try to run it.
+@resource(collection_path='/projects', path='/projects/{name}')
+class Project(object):
+    def __init__(self, request):
+        self.request = request
+        path = self.request.registry.settings['media']
+        self.path = Path(path)
 
-2.  Your database server may not be running.  Check that the
-    database server referred to by the "sqlalchemy.url" setting in
-    your "development.ini" file is running.
+    def collection_get(self):
+        """ Return the list of all projects """
+        projects = [file.name for file in self.path.listdir() if file.isdir()]
+        return {
+            'projects': projects
+            }
 
-After you fix the problem, please restart the Pyramid application to
-try it again.
-"""
+    def get(self):
+        project_name = self.request.matchdict.get('name')
+        project = self.path.child(project_name)
+        project_files = [f.name for f in project.listdir() if f.ext == '.html']
+        return {project_name: project_files}
 
