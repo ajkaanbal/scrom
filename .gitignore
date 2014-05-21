@@ -51,6 +51,7 @@ coverage.xml
 
 # Sphinx documentation
 docs/_build/
+
 ### vim ###
 [._]*.s[a-w][a-z]
 [._]s[a-w][a-z]
@@ -58,3 +59,4 @@ docs/_build/
 Session.vim
 .netrwhist
 *~
+.env
