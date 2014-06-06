@@ -17,6 +17,8 @@ requires = [
     'transaction',
     'zope.sqlalchemy',
     'waitress',
+    'cornice',
+    'psycopg2',
     ]
 
 setup(name='scrom',
