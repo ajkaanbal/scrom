@@ -1,6 +1,10 @@
+# -*- encoding: utf-8 -*-
+
 import unittest
 import os
 import json
+
+import mock
 
 from paste.deploy.loadwsgi import appconfig
 from sqlalchemy import engine_from_config
@@ -133,3 +137,123 @@ class ProjectViewTests(UnitTestBase):
         self.assertEqual(title, 'folder_1')
         self.assertIn('title', item)
         self.assertEqual('Item 1', item.get('title'))
+
+    @mock.patch.dict('scrom.resources.os.environ',
+                     {'RESOURCES_BASE_PATH': 'docs/fixtures'})
+    def test_filesystem_based_project_structure(self):
+        from scrom.views import ProjectView
+
+        request = testing.DummyRequest(path='/projects/foo')
+        request.matchdict = {'name': 'foo'}
+        request.json_body = ''
+
+        structure_expected = {
+            'path': 'foo',
+            'contents': [
+                {
+                    'path': u'Tést test',
+                    'contents': []
+                },
+                {
+                    'path': 'assets',
+                    'contents': [
+                        {
+                            'path': 'img.png'
+                        }
+                    ]
+                },
+                {'path': 'cap1.html'},
+                {'path': 'cap2.html'},
+                {'path': 'cap3.html'},
+                {'path': 'cap4.html'},
+                {'path': 'cap5.html'},
+                {
+                    'path': 'css',
+                    'contents': [
+                        {
+                            'path': 'main.css'
+                        }
+                    ]
+                },
+                {
+                    'path': 'js',
+                    'contents': [
+                        {
+                            'path': 'main.js'
+                        }
+                    ]
+                },
+            ]
+        }
+
+        project = self.session.query(Project).filter_by(name='foo')
+        self.assertEqual(0, project.count())
+
+        view = ProjectView(request)
+        view.post()
+        self.session.flush()
+
+        projects = self.session.query(Project).filter_by(name='foo')
+        self.assertEqual(1, projects.count())
+        self.assertEqual(structure_expected, project.first().structure)
+
+
+class ResourcesTests(unittest.TestCase):
+    @mock.patch.dict('scrom.resources.os.environ',
+                     {'RESOURCES_BASE_PATH': '/tmp'})
+    @mock.patch('scrom.resources.Path')
+    def test_base_path_on_environ(self, mock_resource_path):
+        from scrom.resources import Resources
+
+        Resources('inexistent_path')
+        self.assertEqual('/tmp', os.environ.get('RESOURCES_BASE_PATH', ''))
+        mock_resource_path.assert_called_with('/tmp', 'inexistent_path')
+
+    @mock.patch.dict('scrom.resources.os.environ',
+                     {'RESOURCES_BASE_PATH': ''})
+    def test_path_non_empty(self):
+        from scrom.resources import Resources
+        #  TODO: How to mock filesystem?
+        resources = Resources('docs/fixtures/foo')
+        metadata = resources.metadata()
+
+        metadata_expected = {
+            'path': 'foo',
+            'contents': [
+                {
+                    'path': 'Tést test',
+                    'contents': []
+                },
+                {
+                    'path': 'assets',
+                    'contents': [
+                        {
+                            'path': 'img.png'
+                        }
+                    ]
+                },
+                {'path': 'cap1.html'},
+                {'path': 'cap2.html'},
+                {'path': 'cap3.html'},
+                {'path': 'cap4.html'},
+                {'path': 'cap5.html'},
+                {
+                    'path': 'css',
+                    'contents': [
+                        {
+                            'path': 'main.css'
+                        }
+                    ]
+                },
+                {
+                    'path': 'js',
+                    'contents': [
+                        {
+                            'path': 'main.js'
+                        }
+                    ]
+                },
+            ]
+        }
+
+        self.assertEqual(metadata_expected, metadata)

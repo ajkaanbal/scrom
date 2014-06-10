@@ -18,6 +18,8 @@ requires = [
     'zope.sqlalchemy',
     'waitress',
     'cornice',
+    'unipath',
+    'mock',
     'psycopg2',
     ]
 
