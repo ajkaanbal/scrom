@@ -142,6 +142,7 @@ class ProjectViewTests(UnitTestBase):
                      {'RESOURCES_BASE_PATH': 'docs/fixtures'})
     def test_filesystem_based_project_structure(self):
         from scrom.views import ProjectView
+        self.maxDiff = None
 
         request = testing.DummyRequest(path='/projects/foo')
         request.matchdict = {'name': 'foo'}
@@ -191,7 +192,6 @@ class ProjectViewTests(UnitTestBase):
 
         view = ProjectView(request)
         view.post()
-        self.session.flush()
 
         projects = self.session.query(Project).filter_by(name='foo')
         self.assertEqual(1, projects.count())
@@ -213,6 +213,7 @@ class ResourcesTests(unittest.TestCase):
                      {'RESOURCES_BASE_PATH': ''})
     def test_path_non_empty(self):
         from scrom.resources import Resources
+        self.maxDiff = None
         #  TODO: How to mock filesystem?
         resources = Resources('docs/fixtures/foo')
         metadata = resources.metadata()
