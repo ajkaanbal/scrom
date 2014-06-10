@@ -187,15 +187,15 @@ class ProjectViewTests(UnitTestBase):
             ]
         }
 
-        project = self.session.query(Project).filter_by(name='foo')
-        self.assertEqual(0, project.count())
+        projects = self.session.query(Project).filter_by(name='foo')
+        self.assertEqual(0, projects.count())
 
         view = ProjectView(request)
         view.post()
 
         projects = self.session.query(Project).filter_by(name='foo')
         self.assertEqual(1, projects.count())
-        self.assertEqual(structure_expected, project.first().structure)
+        self.assertEqual(structure_expected, projects.first().structure)
 
 
 class ResourcesTests(unittest.TestCase):
