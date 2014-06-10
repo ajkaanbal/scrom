@@ -11,3 +11,10 @@ python:
 install: "python setup.py -q install"
 script: py.test -q --tb short
 
+#Database
+addons:
+  postgresql: "9.3"
+
+before_script:
+  - psql -c 'create database scrom_test;' -U postgres
+
