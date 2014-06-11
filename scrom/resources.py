@@ -17,7 +17,7 @@ class Resources(object):
         """ Returns a dictionary with info of all directories and files"""
         path = self.path if not path else path
         metadata = {
-            'path': str(path.name),
+            'path': str(path.name).decode('utf8'),
             'contents': []
         }
         contents = metadata.get('contents')
@@ -25,7 +25,7 @@ class Resources(object):
             if subpath.isdir():
                 subpath_metadata = self.metadata(subpath)
             else:
-                subpath_metadata = {'path': str(subpath.name)}
+                subpath_metadata = {'path': str(subpath.name).decode('utf8')}
 
             contents.append(subpath_metadata)
 

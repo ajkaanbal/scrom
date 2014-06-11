@@ -153,7 +153,9 @@ class ProjectViewTests(UnitTestBase):
             'contents': [
                 {
                     'path': u'Tést test',
-                    'contents': []
+                    'contents': [
+                        {'path': u't ést.html'}
+                    ]
                 },
                 {
                     'path': 'assets',
@@ -222,8 +224,8 @@ class ResourcesTests(unittest.TestCase):
             'path': 'foo',
             'contents': [
                 {
-                    'path': 'Tést test',
-                    'contents': []
+                    'path': u'Tést test',
+                    'contents': [{'path': u't ést.html'}]
                 },
                 {
                     'path': 'assets',
