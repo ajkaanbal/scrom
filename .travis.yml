@@ -6,8 +6,6 @@ branches:
 language: python
 python:
   - "2.7"
-  - "3.2"
-  - "3.3"
 install: "python setup.py -q install"
 script: py.test
 
