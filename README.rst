@@ -1,7 +1,6 @@
 SCROM
 =====
-[![Build Status](https://travis-ci.org/ajkaanbal/scrom.svg)](https://travis-ci.org/ajkaanbal/scrom)
-
+|travis|_
 
 Getting Started
 ---------------
@@ -14,3 +13,5 @@ Getting Started
 
 - $VENV/bin/pserve development.ini
 
+.. |travis| image:: https://travis-ci.org/ajkaanbal/scrom.svg
+.. _travis: https://travis-ci.org/ajkaanbal/scrom
