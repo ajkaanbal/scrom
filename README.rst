@@ -1,5 +1,7 @@
-scrom README
-==================
+SCROM
+=====
+[![Build Status](https://travis-ci.org/ajkaanbal/scrom.svg)](https://travis-ci.org/ajkaanbal/scrom)
+
 
 Getting Started
 ---------------
