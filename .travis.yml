@@ -16,6 +16,6 @@ addons:
   postgresql: "9.3"
 
 before_script:
-  - sh -c "if [ '$DATABASE_URL' = 'postgresql+psycopg2://postgres@127.0.0.1/dataset'  ]; then psql -c 'DROP DATABASE IF EXISTS scrom_test;' -U postgres; fi"
-  - sh -c "if [ '$DATABASE_URL' = 'postgresql+psycopg2://postgres@127.0.0.1/dataset'  ]; then psql -c 'create database scrom_test;' -U postgres; fi"
+  - psql -c 'DROP DATABASE IF EXISTS scrom_test;' -U postgres
+  - psql -c 'create database scrom_test;' -U postgres
 
